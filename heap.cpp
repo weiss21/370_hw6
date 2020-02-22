@@ -1,7 +1,6 @@
 /*
  * Title: heap.cpp
- * Abstract:  When the program starts, it should read a set of numbers from a 
- * user and store them in an array in the order the numbers are entered. 
+ * Abstract:  Simple Max Heap. 
  * Author: Wais Robleh
  * ID: 1624
  * Date: 02/22/2020
@@ -11,22 +10,23 @@
 
 using namespace std;
 
-bool isHeap(vector<int> arr,  int n) 
-{ 
-    // Start from root and go till the last internal 
-    // node 
-    for (int i=1; i<=(n-1)/2; i++) 
-    { 
-        // If left child is greater, return false 
-        if (arr[2*i +1] > arr[i]) 
-                return false; 
-  
-        // If right child is greater, return false 
-        if (2*i+2 < n && arr[2*i+2] > arr[i]) 
-                return false; 
-    } 
-    return true; 
-} 
+bool isHeap (vector<int>& arr, int n){
+
+    int half = n/2;
+    if (n%2 == 1)
+    {
+        half = n/2+1;
+    }
+    for (int i = 1; i < half; i++)   {
+        if (arr[2*i] > arr[i] || arr[2*i+1] > arr[i]){
+             return false;
+
+        }
+    }
+
+return true;
+
+}
 
 void printHeap(vector<int> arr, int n){
     for (int i = 1; i < n+1; i++)
@@ -73,6 +73,17 @@ void makeHeap(vector<int>& heap, int inputSize)
     }
 }
 
+void checkHeap(vector<int>& arr, int n){
+    if(isHeap(arr, n))
+    {
+        cout << "This is a heap." << endl;
+    } else {
+        cout << "This is NOT a heap." << endl;
+        cout << "Heap constructed: ";
+        makeHeap(arr, n);
+    }
+}
+
 int main() {
 
     int inSize, num;
@@ -89,7 +100,7 @@ int main() {
         cin >> num;
         heap[i] = num;
     }
-    
+    /*
     if(isHeap(heap, inSize))
     {
         cout << "This is a heap." << endl;
@@ -99,14 +110,15 @@ int main() {
         makeHeap(heap, inSize);
         
     }
-    
-    printHeap(heap, inSize);
-    /*
-    for (int i = 1; i < inSize+1; i++)
-    {
-        cout << heap[i] << endl;
-    }
     */
+    checkHeap(heap,inSize);
+    printHeap(heap, inSize);
+    cout << "\nSelect an operation" << endl;
+    cout << "1: Insert a number" << endl;
+    cout << "2. Delete the max" << endl;
+    cout << "3. Heapsort & Quit" << endl;
+
+    
     
     return 0;
 }
