@@ -11,16 +11,28 @@
 using namespace std;
 
 bool isHeap (vector<int>& arr, int n){
-
+    int left, right;
     int half = n/2;
     if (n%2 == 1)
     {
         half = n/2+1;
     }
-    for (int i = 1; i < half; i++)   {
-        if (arr[2*i] > arr[i] || arr[2*i+1] > arr[i]){
-             return false;
+    for (int i = half; i >= 1; i--)   {
+        left = 2 * i;
+        right = 2 * i + 1;
+        if (left == n)
+        {
+            right = 0;
+        }
+        else if (right > n)
+        {
+            left = 0;
+            right = 0;
+        }
 
+        if (arr[left] > arr[i] || arr[right] > arr[i])
+        {
+            return false;
         }
     }
 
@@ -37,26 +49,26 @@ void printHeap(vector<int> arr, int n){
 }
 
 //Constructs a max heap
-void makeHeap(vector<int>& heap, int inputSize)
+void makeHeap(vector<int>& arr, int n)
 {
     int left, right, largest;
-    while(!isHeap(heap, inputSize))
+    while(!isHeap(arr, n))
     {
-        for (int i = inputSize/2; i >= 1 ; i--)
+        for (int i = n/2; i >= 1 ; i--)
         {
             left = 2 * i;
             right = 2 * i + 1;
-            if (left == inputSize)
+            if (left == n)
             {
                 right = 0;
             }
-            else if (right > inputSize)
+            else if (right > n)
             {
                 left = 0;
                 right = 0;
             }
             //left child larger than right
-            if (heap[left] > heap[right])
+            if (arr[left] > arr[right])
             {
                 largest = left;
             }
@@ -65,9 +77,9 @@ void makeHeap(vector<int>& heap, int inputSize)
                 largest = right;
             }
             //if largest is not root
-            if (heap[largest] > heap[i])
+            if (arr[largest] > arr[i])
             {
-                swap(heap[largest],heap[i]);
+                swap(arr[largest],arr[i]);
             }
         }
     }
@@ -84,9 +96,28 @@ void checkHeap(vector<int>& arr, int n){
     }
 }
 
+//insert into heap
+void insertHeap(vector<int>& arr, int& n, int value)
+{
+    n++;
+    arr.push_back(value);
+    makeHeap(arr, n);
+
+}
+
+//delete max from heap. always at 1
+void deleteHeap(vector<int>& arr, int& n)
+{
+    arr[1] = arr[n];
+    arr.resize(n);
+    n--;
+
+}
+
 int main() {
 
-    int inSize, num;
+    int inSize, num, insert, digit;
+    bool quit = false;
     cout << "Input Size: ";
     cin >> inSize;
     cout << endl;
@@ -100,25 +131,49 @@ int main() {
         cin >> num;
         heap[i] = num;
     }
-    /*
-    if(isHeap(heap, inSize))
-    {
-        cout << "This is a heap." << endl;
-    } else {
-        cout << "This is NOT a heap." << endl;
-        cout << "Heap constructed: ";
-        makeHeap(heap, inSize);
-        
-    }
-    */
+
     checkHeap(heap,inSize);
     printHeap(heap, inSize);
-    cout << "\nSelect an operation" << endl;
-    cout << "1: Insert a number" << endl;
-    cout << "2. Delete the max" << endl;
-    cout << "3. Heapsort & Quit" << endl;
+    
 
     
-    
+    while(!quit){
+        
+        cout << "\nSelect an operation" << endl;
+        cout << "1: Insert a number" << endl;
+        cout << "2. Delete the max" << endl;
+        cout << "3. Heapsort & Quit" << endl;
+        
+        
+        cin >> digit;
+        
+        switch(digit){
+        case 1:
+            cout << "Enter a number: ";
+            cin >> insert;
+            insertHeap(heap, inSize, insert);
+            cout << "Updated heap: " << endl;
+            makeHeap(heap,inSize);
+            printHeap(heap, inSize);
+            break;
+        case 2:
+            deleteHeap(heap, inSize);
+            cout << "Updated heap: ";
+            makeHeap(heap,inSize);
+            printHeap(heap,inSize);
+            break;
+        case 3:
+        cout<< "Heapsort: ";
+            makeHeap(heap,inSize);
+            printHeap(heap,inSize);
+            cout << "Bye!" << endl;
+            quit = true;
+            break;
+        default:
+                cout <<"Pick 1, 2 or 3!\n";
+                break;
+            
+        }
+    }
     return 0;
 }
