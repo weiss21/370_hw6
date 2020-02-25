@@ -11,26 +11,15 @@
 using namespace std;
 
 
-int minKey(int* key, bool* mstSet, int vertices) 
-{ 
-    int min = 99999, min_index; 
-  
-    for (int i = 0; i < vertices; i++) 
-        if (mstSet[i] == false && key[i] < min) 
-            min = key[i], min_index = i; 
-  
-    return min_index; 
-} 
-
-
+int minKey(int* key, bool* inMST, int vertices);
 int main() {
-    int vertices, edges, startingVertex;
+    int vertices, edges, count;
     string fileName;
     
     cout << "Enter input file name: ";
     cin >> fileName;
     cout << "Enter the first vertex to start: ";
-    cin >> startingVertex;
+    cin >> count;
     cout << endl;
     
     ifstream inStream(fileName.c_str());
@@ -39,11 +28,11 @@ int main() {
     inStream >> vertices;
     inStream >> edges;
     
-    int arr[vertices][vertices];
+    int dynamArray[vertices][vertices];
     
     for(int i=0; i<vertices; i++){    
 		for(int j=0; j<vertices; j++){
-			arr[i][j] = 0;
+			dynamArray[i][j] = 0;
 		}
 	}
 	
@@ -52,32 +41,43 @@ int main() {
 	    inStream >> x;
 	    inStream >> y;
 	    inStream >> weight;
-	    arr[x-1][y-1] = weight;
-	    arr[y-1][x-1] = weight;
+	    dynamArray[x-1][y-1] = weight;
+	    dynamArray[y-1][x-1] = weight;
 	}
 	inStream.close();
 	
     int parent[vertices]; 
     int key[vertices]; 
-    bool mstSet[vertices]; 
+    bool inMST[vertices]; 
   
     for (int i=0; i<vertices; i++) 
-        key[i] = 99999, mstSet[i] = false; 
+        key[i] = 1000, inMST[i] = false; 
   
-    key[startingVertex-1] = 0; 
-    parent[startingVertex-1] = -1;  
+    key[count-1] = 0; 
+    parent[count-1] = -1;  
   
     for (int count=0; count<vertices-1; count++) { 
-        int i = minKey(key, mstSet, vertices); 
+        int i = minKey(key, inMST, vertices); 
   
-        mstSet[i] = true; 
+        inMST[i] = true; 
   
         for (int j=0; j<vertices; j++) 
   
-            if (arr[i][j] && mstSet[j] == false && arr[i][j] < key[j]) 
-                parent[j] = i, key[j] = arr[i][j]; 
+            if (dynamArray[i][j] && inMST[j] == false && dynamArray[i][j] < key[j]) 
+                parent[j] = i, key[j] = dynamArray[i][j]; 
     } 
   
     for (int i = 1; i < vertices; i++) 
-        cout << "(" << i << ") New edge: " << parent[i]+1 << "," << i+1 << " -- cost " << arr[i][parent[i]] << endl;
+        cout << "(" << i << ") New edge: " << parent[i]+1 << "," << i+1 << " - cost " << dynamArray[i][parent[i]] << endl;
 }
+
+int minKey(int* key, bool* inMST, int vertices) 
+{ 
+    int min = 1000, min_index; 
+  
+    for (int i = 0; i < vertices; i++) 
+        if (inMST[i] == false && key[i] < min) 
+            min = key[i], min_index = i; 
+  
+    return min_index; 
+} 
